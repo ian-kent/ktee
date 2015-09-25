@@ -12,6 +12,15 @@ type kafkaWriter struct {
 	writer   io.Writer
 	topic    string
 	buffer   *bytes.Buffer
+	messages chan sarama.ProducerMessage
+}
+
+func (w kafkaWriter) Sender() {
+	for {
+		select {
+		//case m := <-w.messages:
+		}
+	}
 }
 
 func (w kafkaWriter) send() error {

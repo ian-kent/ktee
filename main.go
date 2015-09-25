@@ -26,7 +26,12 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		cmd.Process.Signal(<-sigs)
+		for {
+			select {
+			case sig := <-sigs:
+				cmd.Process.Signal(sig)
+			}
+		}
 	}()
 
 	var cfg config
@@ -57,8 +62,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	kwOut := kafkaWriter{producer, os.Stdout, cfg.OutTopic, new(bytes.Buffer)}
-	kwErr := kafkaWriter{producer, os.Stderr, cfg.ErrTopic, new(bytes.Buffer)}
+	kwOut := kafkaWriter{producer, os.Stdout, cfg.OutTopic, new(bytes.Buffer), make(chan sarama.ProducerMessage)}
+	kwErr := kafkaWriter{producer, os.Stderr, cfg.ErrTopic, new(bytes.Buffer), make(chan sarama.ProducerMessage)}
 
 	defer func() {
 		kwOut.Flush()
