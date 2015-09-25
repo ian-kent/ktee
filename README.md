@@ -1,4 +1,4 @@
-kcmd
+ktee
 ====
 
 Intercepts `stdout`/`stderr` and tees them to a Kafka topic.
@@ -6,11 +6,11 @@ Intercepts `stdout`/`stderr` and tees them to a Kafka topic.
 ### Usage
 
 ```bash
-~> go get github.com/ian-kent/kcmd
-~> export KCMD_BROKERS="localhost:9092"
-~> export KCMD_OUT_TOPIC="log"
-~> export KCMD_ERR_TOPIC="log"
-~> kcmd echo "Grumpy wizards make toxic brew for the evil Queen and Jack"
+~> go get github.com/ian-kent/ktee
+~> export KTEE_BROKERS="localhost:9092"
+~> export KTEE_OUT_TOPIC="log"
+~> export KTEE_ERR_TOPIC="log"
+~> ktee echo "Grumpy wizards make toxic brew for the evil Queen and Jack"
 ```
 
 Each line (`\n` separated) is treated as a new Kafka message. Data written to
@@ -30,13 +30,13 @@ Buffering of failed writes is not currently supported.
 
 ### Configuration
 
-If `KCMD_BROKERS` is unset, no Kafka connection is attempted. `KCMD_OUT_TOPIC` and
-`KCMD_ERR_TOPIC` are ignored.
+If `KTEE_BROKERS` is unset, no Kafka connection is attempted. `KTEE_OUT_TOPIC` and
+`KTEE_ERR_TOPIC` are ignored.
 
-If `KCMD_BROKERS` is set, a connection to Kafka is initiated. Kafka connection errors
+If `KTEE_BROKERS` is set, a connection to Kafka is initiated. Kafka connection errors
 will cause the process to exit and the command will not be executed.
 
-If `KCMD_BROKERS` is set, but either `KCMD_OUT_TOPIC` or `KCMD_ERR_TOPIC` are unset,
+If `KTEE_BROKERS` is set, but either `KTEE_OUT_TOPIC` or `KTEE_ERR_TOPIC` are unset,
 the corresponding file descriptor is not written to Kafka.
 
 ### Licence

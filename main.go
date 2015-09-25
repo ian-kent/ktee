@@ -14,15 +14,15 @@ import (
 
 type config struct {
 	gofigure interface{} `order:"env"`
-	Brokers  string      `env:"KCMD_BROKERS"`
-	OutTopic string      `env:"KCMD_OUT_TOPIC"`
-	ErrTopic string      `env:"KCMD_ERR_TOPIC"`
+	Brokers  string      `env:"KTEE_BROKERS"`
+	OutTopic string      `env:"KTEE_OUT_TOPIC"`
+	ErrTopic string      `env:"KTEE_ERR_TOPIC"`
 }
 
 func main() {
 	var cfg config
 	if err := gofigure.Gofigure(&cfg); err != nil {
-		fmt.Fprintln(os.Stderr, "unexpected error configuring kcmd")
+		fmt.Fprintln(os.Stderr, "unexpected error configuring ktee")
 		os.Exit(1)
 	}
 
@@ -44,7 +44,7 @@ func main() {
 
 	args := os.Args[1:]
 	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, "usage: kcmd args")
+		fmt.Fprintln(os.Stderr, "usage: ktee args")
 		os.Exit(1)
 	}
 
