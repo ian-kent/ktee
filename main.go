@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 	"syscall"
 
@@ -20,6 +21,14 @@ type config struct {
 }
 
 func main() {
+	var cmd *exec.Cmd
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		cmd.Process.Signal(<-sigs)
+	}()
+
 	var cfg config
 	if err := gofigure.Gofigure(&cfg); err != nil {
 		fmt.Fprintln(os.Stderr, "unexpected error configuring ktee")
@@ -56,7 +65,7 @@ func main() {
 		kwErr.Flush()
 	}()
 
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd = exec.Command(args[0], args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = kwOut
 	cmd.Stderr = kwErr

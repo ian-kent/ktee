@@ -30,11 +30,17 @@ func (w kafkaWriter) send() error {
 			Value: sarama.ByteEncoder(ln),
 		}
 
-		if _, _, err := w.producer.SendMessage(message); err != nil {
-			// TODO: handle errors, buffer, etc
-			w.writer.(io.Closer).Close()
-			return err
-		}
+		go func(m *sarama.ProducerMessage) {
+			if _, _, err := w.producer.SendMessage(message); err != nil {
+				if err != nil {
+					// TODO: handle errors, buffer, etc
+				}
+				err = w.writer.(io.Closer).Close()
+				if err != nil {
+					// TODO: handle errors, buffer, etc
+				}
+			}
+		}(message)
 
 		w.writer.Write(ln)
 	}
